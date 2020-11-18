@@ -246,6 +246,18 @@
 		integer :: DE_eqstate = 0 !use cosmological constant (or set CPL with MG)
         !CGQ ------------------------------------------------
 		!< ISiTGR MOD END
+		
+	!>w(a) Binning MOD START
+        !ON--------------------------------------------------
+        !Binning for dark energy, start with 2 z bins
+        real(dl) :: w1=0._dl      
+        real(dl) :: w2=0._dl   
+
+        logical :: ISiTGR_BIN_w=.false. !for binning method
+
+        !ON -------------------------------------------------
+        !< w(a) Binning MOD END     
+	
     contains
     procedure, nopass :: PythonClass => CAMBparams_PythonClass
     procedure, nopass :: SelfPointer => CAMBparams_SelfPointer
