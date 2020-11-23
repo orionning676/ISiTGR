@@ -2203,8 +2203,8 @@ dgpi_3wplus1plusbetak) !CGQ
 	
 	!binning method expression
 	if((CP%w_BIN)) then
-        w_BIN = (1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
-        +(1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
+        w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
+        +(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
 
 		
 	end if
