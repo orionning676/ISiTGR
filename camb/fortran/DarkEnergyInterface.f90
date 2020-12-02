@@ -43,6 +43,45 @@
     public TDarkEnergyModel, TDarkEnergyEqnOfState
     contains
 
+
+    !>w(a) Binning MOD START
+    !ON--------------------------------------------------
+    !want to implement the binning equations here for w
+    !for now, no scale dependence, but still not exactly sure of the difference
+    !between this and the equations.f90 file in terms of dark energy binning
+    
+    function w_binning(this, a)
+	use constants
+	use results
+    use classes
+    class(TCAMBdata), intent(in) :: State
+    class(TDarkEnergyModel) :: this
+    real(dl), intent(in) :: a
+    real(dl) w_BIN
+	!real(dl) :: s1_k, s2_k
+	!real(dl) :: mu_MG, omegav
+	
+    !select type(State)
+    !class is (CAMBdata)
+	!omegav = State%Omega_de ! Omega_de is total dark energy density today
+	!end select
+	
+	!binning method expression, assumes eqn. of state is w = -1 beyond certain z
+	if((CP%w_BIN)) then
+        w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
+        +(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
+
+		
+	end if
+		
+	end function w_BIN
+
+    
+
+    !ON -------------------------------------------------
+    !< w(a) Binning MOD END 
+    
+    
     function w_de(this, a)
     class(TDarkEnergyModel) :: this
     real(dl) :: w_de, al
