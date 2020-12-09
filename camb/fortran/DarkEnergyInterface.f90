@@ -213,8 +213,12 @@
     real(dl) :: TDarkEnergyEqnOfState_w_de, al
     real(dl), intent(IN) :: a
 
-    if(.not. this%use_tabulated_w) then
+    if(.not. (this%use_tabulated_w .OR. this%use_w_binning) then    !define use_w_binning later
         TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
+	
+    else if(.not. this%use_tabulated_w) then
+    	TDarkEnergyEqnofState_w_de= w_binning(this, a)   !have to clean up unneccessary stuff in this function
+    	
     else
         al=dlog(a)
         if(al <= this%equation_of_state%Xmin_interp) then
