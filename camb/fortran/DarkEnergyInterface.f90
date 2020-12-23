@@ -215,10 +215,10 @@
 
     if(.not. (this%use_tabulated_w .OR. this%use_w_binning)) then    !define use_w_binning later
         TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
-	
+    !ON edit for w binning -- start	
     else if(.not. this%use_tabulated_w) then
     	TDarkEnergyEqnofState_w_de= w_binning(this, a)   !have to clean up unneccessary stuff in this function
-    	
+    !ON edit for w binning -- end
     else
         al=dlog(a)
         if(al <= this%equation_of_state%Xmin_interp) then
