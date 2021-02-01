@@ -19,6 +19,9 @@
     procedure :: w_de
     procedure :: grho_de
     procedure :: Effective_w_wa !Used as approximate values for non-linear corrections
+    !ON start-----------------------------------------------------
+    procedure :: w_binning
+    !ON end-------------------------------------------------------
     end type TDarkEnergyModel
 
     type, extends(TDarkEnergyModel) :: TDarkEnergyEqnOfState
@@ -50,14 +53,14 @@
     !for now, no scale dependence, but still not exactly sure of the difference
     !between this and the equations.f90 file in terms of dark energy binning
     
-    function w_binning(this, a)
-	use constants
-	use results
-    use classes
-    class(TCAMBdata), intent(in) :: State
-    class(TDarkEnergyModel) :: this
-    real(dl), intent(in) :: a
-    real(dl) w_BIN
+    !!function w_binning(this, a)
+	!!use constants
+	!!use results
+    !!use classes
+    !!class(TCAMBdata), intent(in) :: State
+    !!class(TDarkEnergyModel) :: this
+    !!real(dl), intent(in) :: a
+    !!real(dl) w_BIN
 	!real(dl) :: s1_k, s2_k
 	!real(dl) :: mu_MG, omegav
 	
@@ -67,20 +70,37 @@
 	!end select
 	
 	!binning method expression, assumes eqn. of state is w = -1 beyond certain z
-	if((CP%w_BIN)) then
-        w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
-        +(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
+	!!if((CP%w_BIN)) then
+        !!w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
+        !!+(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
 
 		
-	end if
+	!!end if
 		
-	end function w_BIN
+	!!end function w_BIN
 
     
 
     !ON -------------------------------------------------
     !< w(a) Binning MOD END 
     
+    !ON -----------------------------------------------
+    !testing out changing w in bins manually, see if this changes power spectrum
+    
+    function w_binning(this, a)
+    class(TDarkEnergyModel) :: this
+    real(dl), intent(IN) :: a
+    real(dl) :: w_binning 
+    
+    if (a > 0.5) then
+    	w_binning = -0.8
+    else
+    	w_binning = -0.5
+    endif
+    
+    end function w_binning  
+    
+    !ON -----------------------------------------------
     
     function w_de(this, a)
     class(TDarkEnergyModel) :: this
@@ -132,6 +152,7 @@
             grhov_t = 0._dl
         end if
         if (present(w)) w = this%w_de(a)
+        !if (present(w)) w = this%w_binning(a)
     end if
 
     end subroutine BackgroundDensityAndPressure
@@ -213,12 +234,15 @@
     real(dl) :: TDarkEnergyEqnOfState_w_de, al
     real(dl), intent(IN) :: a
 
-    if(.not. (this%use_tabulated_w .OR. this%use_w_binning)) then    !define use_w_binning later
-        TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
+    !!if(.not. (this%use_tabulated_w .OR. this%use_w_binning)) then    !define use_w_binning later
+        !!TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
     !ON edit for w binning -- start	
-    else if(.not. this%use_tabulated_w) then
-    	TDarkEnergyEqnofState_w_de= w_binning(this, a)   !have to clean up unneccessary stuff in this function
+    !!else if(.not. this%use_tabulated_w) then
+    	!!TDarkEnergyEqnofState_w_de= w_binning(this, a)   !have to clean up unneccessary stuff in this function
     !ON edit for w binning -- end
+    if(.not. this%use_tabulated_w) then    !define use_w_binning later
+        !TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
+    	TDarkEnergyEqnOfState_w_de = this%w_binning(a)
     else
         al=dlog(a)
         if(al <= this%equation_of_state%Xmin_interp) then

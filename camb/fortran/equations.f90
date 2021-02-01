@@ -2186,30 +2186,30 @@ dgpi_3wplus1plusbetak) !CGQ
     !>w(a) Binning MOD START
     !ON--------------------------------------------------
     
-    function w_BIN(State,k,a,adotoa)
-	use constants
-	use results
-    use classes
-    class(TCAMBdata), intent(in) :: State
-    real(dl), intent(in) :: k, a, adotoa
-    real(dl) w_BIN
-	real(dl) :: s1_k, s2_k
-	real(dl) :: mu_MG, omegav
+    !!function w_BIN(State,k,a,adotoa)
+	!!use constants
+	!!use results
+    !!use classes
+    !!class(TCAMBdata), intent(in) :: State
+    !!real(dl), intent(in) :: k, a, adotoa
+    !!real(dl) w_BIN
+	!!real(dl) :: s1_k, s2_k
+	!!real(dl) :: mu_MG, omegav
 	
-    select type(State)
-    class is (CAMBdata)
-	omegav = State%Omega_de ! Omega_de is total dark energy density today
-	end select
+    !!select type(State)
+    !!class is (CAMBdata)
+	!!omegav = State%Omega_de ! Omega_de is total dark energy density today
+	!!end select
 	
 	!binning method expression
-	if((CP%w_BIN)) then
-        w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
-        +(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
+	!!if((CP%w_BIN)) then
+        !!w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
+        !!+(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
 
 		
-	end if
+	!!end if
 		
-	end function w_BIN
+	!!end function w_BIN
 
     
 
