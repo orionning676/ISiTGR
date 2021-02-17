@@ -20,7 +20,10 @@
     procedure :: grho_de
     procedure :: Effective_w_wa !Used as approximate values for non-linear corrections
     !ON start-----------------------------------------------------
+    
+    procedure :: w_binning_simple
     procedure :: w_binning
+    
     !ON end-------------------------------------------------------
     end type TDarkEnergyModel
 
@@ -85,18 +88,39 @@
     !< w(a) Binning MOD END 
     
     !ON -----------------------------------------------
-    !testing out changing w in bins manually, see if this changes power spectrum
+    !testing out changing w in bins manually, simple, see if this changes power spectrum
+    
+    function w_binning_simple(this, a)
+    class(TDarkEnergyModel) :: this
+    real(dl), intent(IN) :: a
+    real(dl) :: w_binning_simple 
+    
+    if (a > 0.5) then
+    	w_binning_simple = -0.8
+    else
+    	w_binning_simple = -0.5
+    endif
+    
+    end function w_binning_simple  
+    
+    
+    !try using the actual binning form with tanh transitions, redshift dependence only for now
     
     function w_binning(this, a)
     class(TDarkEnergyModel) :: this
     real(dl), intent(IN) :: a
-    real(dl) :: w_binning 
+    real(dl) :: w_binning, w_BIN_Z1, w_BIN_Z2, z_div, z_TGR, z_tw
     
-    if (a > 0.5) then
-    	w_binning = -0.8
-    else
-    	w_binning = -0.5
-    endif
+    z_div= 1.0
+    
+    z_TGR= 2.0
+    
+    z_tw= 0.05
+    
+    w_BIN_Z1 = 1.0
+    w_BIN_Z2 = 1.0
+    
+    w_binning = (-1+w_BIN_Z1 +(w_BIN_Z2-w_BIN_Z1)*tanh((1.d0/a-1.d0-z_div)/z_tw) +(-1-w_BIN_Z2)*tanh((1.d0/a-1.d0-z_TGR)/z_tw))/2.d0
     
     end function w_binning  
     
