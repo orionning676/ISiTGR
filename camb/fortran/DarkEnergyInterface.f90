@@ -52,42 +52,9 @@
 
     !>w(a) Binning MOD START
     !ON--------------------------------------------------
-    !want to implement the binning equations here for w
-    !for now, no scale dependence, but still not exactly sure of the difference
-    !between this and the equations.f90 file in terms of dark energy binning
-    
-    !!function w_binning(this, a)
-	!!use constants
-	!!use results
-    !!use classes
-    !!class(TCAMBdata), intent(in) :: State
-    !!class(TDarkEnergyModel) :: this
-    !!real(dl), intent(in) :: a
-    !!real(dl) w_BIN
-	!real(dl) :: s1_k, s2_k
-	!real(dl) :: mu_MG, omegav
-	
-    !select type(State)
-    !class is (CAMBdata)
-	!omegav = State%Omega_de ! Omega_de is total dark energy density today
-	!end select
-	
-	!binning method expression, assumes eqn. of state is w = -1 beyond certain z
-	!!if((CP%w_BIN)) then
-        !!w_BIN = (-1+w_BIN_Z1(k) +(w_BIN_Z2(k)-w_BIN_Z1(k))*tanh((1.d0/a-1.d0-CP%z_div)/CP%z_tw) &
-        !!+(-1-w_BIN_Z2(k))*tanh((1.d0/a-1.d0-CP%z_TGR)/CP%z_tw))/2.d0
-
-		
-	!!end if
-		
-	!!end function w_BIN
-
     
 
-    !ON -------------------------------------------------
-    !< w(a) Binning MOD END 
     
-    !ON -----------------------------------------------
     !testing out changing w in bins manually, simple, see if this changes power spectrum
     
     function w_binning_simple(this, a)
@@ -117,14 +84,15 @@
     
     z_tw= 0.05
     
-    w_BIN_Z1 = 1.0
-    w_BIN_Z2 = 1.0
+    w_BIN_Z1 = -0.9
+    w_BIN_Z2 = -0.8
     
     w_binning = (-1+w_BIN_Z1 +(w_BIN_Z2-w_BIN_Z1)*tanh((1.d0/a-1.d0-z_div)/z_tw) +(-1-w_BIN_Z2)*tanh((1.d0/a-1.d0-z_TGR)/z_tw))/2.d0
     
     end function w_binning  
     
-    !ON -----------------------------------------------
+    !ON -------------------------------------------------
+    !< w(a) Binning MOD END 
     
     function w_de(this, a)
     class(TDarkEnergyModel) :: this
@@ -175,8 +143,10 @@
         else
             grhov_t = 0._dl
         end if
-        if (present(w)) w = this%w_de(a)
-        !if (present(w)) w = this%w_binning(a)
+        !if (present(w)) w = this%w_de(a)
+        !ON edit for w binning -- start
+        if (present(w)) w = this%w_binning(a)
+        !ON edit for w binning -- end
     end if
 
     end subroutine BackgroundDensityAndPressure
@@ -262,11 +232,12 @@
         !!TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
     !ON edit for w binning -- start	
     !!else if(.not. this%use_tabulated_w) then
-    	!!TDarkEnergyEqnofState_w_de= w_binning(this, a)   !have to clean up unneccessary stuff in this function
-    !ON edit for w binning -- end
-    if(.not. this%use_tabulated_w) then    !define use_w_binning later
+    	!!TDarkEnergyEqnofState_w_de= w_binning(this, a)   !will modify later, ultimately want use_w_binning as an option
+    
+    if(.not. this%use_tabulated_w) then    
         !TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
     	TDarkEnergyEqnOfState_w_de = this%w_binning(a)
+    	!ON edit for w binning -- end
     else
         al=dlog(a)
         if(al <= this%equation_of_state%Xmin_interp) then
